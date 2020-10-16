@@ -13,7 +13,7 @@ import time, pickle, argparse, glob, os
 class S3DIS:
     def __init__(self, test_area_idx):
         self.name = 'S3DIS'
-        self.path = '/data/S3DIS'
+        self.path = 'data/S3DIS'
         self.label_to_names = {0: 'ceiling',
                                1: 'floor',
                                2: 'wall',
@@ -44,6 +44,7 @@ class S3DIS:
         self.input_colors = {'training': [], 'validation': []}
         self.input_labels = {'training': [], 'validation': []}
         self.input_names = {'training': [], 'validation': []}
+
         self.load_sub_sampled_clouds(cfg.sub_grid_size)
 
     def load_sub_sampled_clouds(self, sub_grid_size):
@@ -92,7 +93,7 @@ class S3DIS:
                 self.val_labels += [labels]
                 print('{:s} done in {:.1f}s'.format(cloud_name, time.time() - t0))
 
-    # Generate the input data flow
+    # Generate the `input data flow
     def get_batch_gen(self, split):
         if split == 'training':
             num_per_epoch = cfg.train_steps * cfg.batch_size
@@ -159,8 +160,32 @@ class S3DIS:
                            queried_pc_labels,
                            queried_idx.astype(np.int32),
                            np.array([cloud_idx], dtype=np.int32))
+        def random_gen():
+            # random -> rd
+            # Generator loop
+            for i in range(num_per_epoch):
 
-        gen_func = spatially_regular_gen
+                rd_cloud_idx = np.random.randint(0,len(self.input_trees[split]),dtype=np.uint32)
+                points = np.array(self.input_trees[split][rd_cloud_idx].data, copy=False)
+
+                rd_queried_idx = np.random.randint(0,len(points),cfg.num_points,np.uint32)
+
+                # Get corresponding points and colors based on the index
+                queried_pc_xyz = points[rd_queried_idx]
+                #queried_pc_xyz = queried_pc_xyz - pick_point
+                queried_pc_colors = self.input_colors[split][rd_cloud_idx][rd_queried_idx]
+                queried_pc_labels = self.input_labels[split][rd_cloud_idx][rd_queried_idx]
+
+
+                if True:
+                    yield (queried_pc_xyz.astype(np.float32),
+                           queried_pc_colors.astype(np.float32),
+                           queried_pc_labels,
+                           rd_queried_idx.astype(np.int32),
+                           np.array([rd_cloud_idx], dtype=np.int32))
+
+        #gen_func = spatially_regular_gen
+        gen_func = random_gen
         gen_types = (tf.float32, tf.float32, tf.int32, tf.int32, tf.int32)
         gen_shapes = ([None, 3], [None, 3], [None], [None], [None])
         return gen_func, gen_types, gen_shapes
@@ -221,8 +246,8 @@ if __name__ == '__main__':
     parser = argparse.ArgumentParser()
     parser.add_argument('--gpu', type=int, default=0, help='the number of GPUs to use [default: 0]')
     parser.add_argument('--test_area', type=int, default=5, help='Which area to use for test, option: 1-6 [default: 5]')
-    parser.add_argument('--mode', type=str, default='train', help='options: train, test, vis')
-    parser.add_argument('--model_path', type=str, default='None', help='pretrained model path')
+    parser.add_argument('--mode', type=str, default='test', help='options: train, test, vis')
+    parser.add_argument('--model_path', type=str, default='results/Log_2020-10-09_09-20-53/snapshots/snap-27001', help='pretrained model path')
     FLAGS = parser.parse_args()
 
     os.environ["CUDA_DEVICE_ORDER"] = "PCI_BUS_ID"

@@ -1,1 +1,10 @@
 .idea
+data
+utils/cpp_wrappers
+utils/nearest_neighbors
+results
+train_log
+__pycache__
+test
+log_*
+.vscode
