@@ -301,7 +301,7 @@ class Network:
     @staticmethod
     def random_sample(feature, pool_idx):
         """
-        :param feature: [B, N, d] input features matrix
+        :param feature: [B, N, 1, d] input features matrix
         :param pool_idx: [B, N', max_num] N' < N, N' is the selected position after pooling
         :return: pool_features = [B, N', d] pooled features matrix
         """
@@ -318,7 +318,7 @@ class Network:
     @staticmethod
     def nearest_interpolation(feature, interp_idx):
         """
-        :param feature: [B, N, d] input features matrix
+        :param feature: [B, N, 1, d] input features matrix
         :param interp_idx: [B, up_num_points, 1] nearest neighbour index
         :return: [B, up_num_points, d] interpolated features matrix
         """

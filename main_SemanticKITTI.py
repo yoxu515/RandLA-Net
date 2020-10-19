@@ -12,7 +12,7 @@ import os, argparse, pickle
 class SemanticKITTI:
     def __init__(self, test_id):
         self.name = 'SemanticKITTI'
-        self.dataset_path = '/data/semantic_kitti/dataset/sequences_0.06'
+        self.dataset_path = 'data/semantic_kitti/dataset/sequences_0.06'
         self.label_to_names = {0: 'unlabeled',
                                1: 'car',
                                2: 'bicycle',
@@ -190,10 +190,10 @@ class SemanticKITTI:
 
 if __name__ == '__main__':
     parser = argparse.ArgumentParser()
-    parser.add_argument('--gpu', type=int, default=0, help='the number of GPUs to use [default: 0]')
-    parser.add_argument('--mode', type=str, default='train', help='options: train, test, vis')
-    parser.add_argument('--test_area', type=str, default='14', help='options: 08, 11,12,13,14,15,16,17,18,19,20,21')
-    parser.add_argument('--model_path', type=str, default='None', help='pretrained model path')
+    parser.add_argument('--gpu', type=int, default=2, help='the number of GPUs to use [default: 0]')
+    parser.add_argument('--mode', type=str, default='test', help='options: train, test, vis')
+    parser.add_argument('--test_area', type=str, default='08', help='options: 08, 11,12,13,14,15,16,17,18,19,20,21')
+    parser.add_argument('--model_path', type=str, default='results/SemanticKITTI/snap-277357', help='pretrained model path')
     FLAGS = parser.parse_args()
 
     os.environ["CUDA_DEVICE_ORDER"] = "PCI_BUS_ID"

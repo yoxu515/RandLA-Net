@@ -184,8 +184,8 @@ class S3DIS:
                            rd_queried_idx.astype(np.int32),
                            np.array([rd_cloud_idx], dtype=np.int32))
 
-        #gen_func = spatially_regular_gen
-        gen_func = random_gen
+        gen_func = spatially_regular_gen
+        #gen_func = random_gen
         gen_types = (tf.float32, tf.float32, tf.int32, tf.int32, tf.int32)
         gen_shapes = ([None, 3], [None, 3], [None], [None], [None])
         return gen_func, gen_types, gen_shapes
@@ -244,7 +244,7 @@ class S3DIS:
 
 if __name__ == '__main__':
     parser = argparse.ArgumentParser()
-    parser.add_argument('--gpu', type=int, default=0, help='the number of GPUs to use [default: 0]')
+    parser.add_argument('--gpu', type=int, default=2, help='the number of GPUs to use [default: 0]')
     parser.add_argument('--test_area', type=int, default=5, help='Which area to use for test, option: 1-6 [default: 5]')
     parser.add_argument('--mode', type=str, default='test', help='options: train, test, vis')
     parser.add_argument('--model_path', type=str, default='results/Log_2020-10-09_09-20-53/snapshots/snap-27001', help='pretrained model path')
